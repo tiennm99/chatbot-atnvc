@@ -32,7 +32,7 @@ if is_debug:
     html = read_text_from_file("_.txt")
 else:
     html = get_from_url("https://ln.hako.vn/sang-tac/8476-kiep-nay-la-anh-trai-cua-nhan-vat-chinh")
-    write_text_to_file(html, "_.txt")
+    # write_text_to_file(html, "_.txt")
 
 soup = BeautifulSoup(html, "html.parser")
 chapters = soup.find_all("div", {"class": "chapter-name"})
@@ -49,4 +49,9 @@ for chapter in chapters:
     chapterHtml = get_from_url(chapterUrl)
     chapterSoup = BeautifulSoup(chapterHtml, "html.parser")
     chapterContent = chapterSoup.find("div", {"id": "chapter-content"})
-    write_text_to_file(chapterContent.text, chapterTitle + ".txt")
+    chapterData = ""
+    if chapterContent is not None:
+        paragraphs = chapterContent.find_all("p", id=lambda x: x and x.isdigit())
+        for paragraph in paragraphs:
+            chapterData += paragraph.text + "\n"
+    write_text_to_file(chapterData, chapterTitle + ".txt")
